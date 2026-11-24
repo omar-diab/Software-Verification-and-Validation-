@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LendingService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library of Things</a> &gt; <a href="index.source.html" class="el_package">library</a> &gt; <span class="el_source">LendingService.java</span></div><h1>LendingService.java</h1><pre class="source lang-java linenums">package library;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+/**
+ * The rules of the library.
+ * Members, items, and loans are stored in memory. There is no database.
+ * Dates are passed in by the caller so tests can choose any day.
+ */
+public class LendingService {
+
+    public static final int MAX_BORROWED_ITEMS = 2;
+
+    private ArrayList&lt;Member&gt; members;
+    private ArrayList&lt;Item&gt; items;
+    private ArrayList&lt;Loan&gt; loans;
+    private FineCalculator fineCalculator;
+
+<span class="fc" id="L20">    public LendingService() {</span>
+<span class="fc" id="L21">        members = new ArrayList&lt;Member&gt;();</span>
+<span class="fc" id="L22">        items = new ArrayList&lt;Item&gt;();</span>
+<span class="fc" id="L23">        loans = new ArrayList&lt;Loan&gt;();</span>
+<span class="fc" id="L24">        fineCalculator = new FineCalculator();</span>
+<span class="fc" id="L25">    }</span>
+
+    /** FR1: register a neighbour. */
+    public Member registerMember(String memberId, String name) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (!Validator.isMemberId(memberId)) {</span>
+<span class="fc" id="L30">            throw new LibraryException(&quot;Member ID must look like M0001.&quot;);</span>
+        }
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        if (name == null || name.trim().isEmpty()) {</span>
+<span class="fc" id="L33">            throw new LibraryException(&quot;Member name must not be empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (findMember(memberId) != null) {</span>
+<span class="fc" id="L36">            throw new LibraryException(&quot;Member ID already exists: &quot; + memberId);</span>
+        }
+
+<span class="fc" id="L39">        Member member = new Member(memberId, name.trim());</span>
+<span class="fc" id="L40">        members.add(member);</span>
+<span class="fc" id="L41">        return member;</span>
+    }
+
+    /** FR2: add an item. The owner must already be registered. */
+    public Item addItem(String itemId, String name, String category, String ownerId) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (!Validator.isItemId(itemId)) {</span>
+<span class="fc" id="L47">            throw new LibraryException(&quot;Item ID must look like I0001.&quot;);</span>
+        }
+<span class="fc bfc" id="L49" title="All 4 branches covered.">        if (name == null || name.trim().isEmpty()) {</span>
+<span class="fc" id="L50">            throw new LibraryException(&quot;Item name must not be empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L52" title="All 4 branches covered.">        if (category == null || category.trim().isEmpty()) {</span>
+<span class="fc" id="L53">            throw new LibraryException(&quot;Category must not be empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (findItem(itemId) != null) {</span>
+<span class="fc" id="L56">            throw new LibraryException(&quot;Item ID already exists: &quot; + itemId);</span>
+        }
+
+<span class="fc" id="L59">        Member owner = findMember(ownerId);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (owner == null) {</span>
+<span class="fc" id="L61">            throw new LibraryException(&quot;Owner is not a registered member: &quot; + ownerId);</span>
+        }
+
+<span class="fc" id="L64">        Item item = new Item(itemId, name.trim(), category.trim(), owner.getId());</span>
+<span class="fc" id="L65">        items.add(item);</span>
+<span class="fc" id="L66">        return item;</span>
+    }
+
+    /**
+     * FR3: borrow an item.
+     * Checks run in this order. The first failure stops the method,
+     * so nothing is saved when the request is rejected.
+     * 1. Member ID and item ID have the right format.
+     * 2. The member and the item exist.
+     * 3. The loan length is from 1 to 14 days.
+     * 4. The member is not the owner.
+     * 5. The item is available.
+     * 6. The member has fewer than 2 borrowed items.
+     */
+    public Loan borrowItem(String memberId, String itemId, LocalDate borrowDate, int days) {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (!Validator.isMemberId(memberId)) {</span>
+<span class="fc" id="L82">            throw new LibraryException(&quot;Member ID must look like M0001.&quot;);</span>
+        }
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (!Validator.isItemId(itemId)) {</span>
+<span class="fc" id="L85">            throw new LibraryException(&quot;Item ID must look like I0001.&quot;);</span>
+        }
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (borrowDate == null) {</span>
+<span class="fc" id="L88">            throw new LibraryException(&quot;Borrow date is required.&quot;);</span>
+        }
+
+<span class="fc" id="L91">        Member member = findMember(memberId);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (member == null) {</span>
+<span class="fc" id="L93">            throw new LibraryException(&quot;Member was not found: &quot; + memberId);</span>
+        }
+<span class="fc" id="L95">        Item item = findItem(itemId);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (item == null) {</span>
+<span class="fc" id="L97">            throw new LibraryException(&quot;Item was not found: &quot; + itemId);</span>
+        }
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (!Validator.isValidLoanDays(days)) {</span>
+<span class="fc" id="L100">            throw new LibraryException(&quot;Loan length must be from 1 to 14 days.&quot;);</span>
+        }
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (item.getOwnerId().equals(memberId)) {</span>
+<span class="fc" id="L103">            throw new LibraryException(&quot;A member cannot borrow their own item.&quot;);</span>
+        }
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (!item.isAvailable()) {</span>
+<span class="fc" id="L106">            throw new LibraryException(&quot;Item is not available: &quot; + itemId);</span>
+        }
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (member.getBorrowedItemCount() &gt;= MAX_BORROWED_ITEMS) {</span>
+<span class="fc" id="L109">            throw new LibraryException(&quot;A member can borrow at most 2 items.&quot;);</span>
+        }
+
+<span class="fc" id="L112">        Loan loan = new Loan(itemId, memberId, borrowDate, days);</span>
+<span class="fc" id="L113">        loans.add(loan);</span>
+<span class="fc" id="L114">        item.setAvailable(false);</span>
+<span class="fc" id="L115">        member.increaseBorrowedCount();</span>
+<span class="fc" id="L116">        return loan;</span>
+    }
+
+    /**
+     * FR4: return a borrowed item.
+     * The method returns the late fee in TL.
+     * After a successful return the item is available again.
+     */
+    public int returnItem(String itemId, LocalDate returnDate) {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (!Validator.isItemId(itemId)) {</span>
+<span class="fc" id="L126">            throw new LibraryException(&quot;Item ID must look like I0001.&quot;);</span>
+        }
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (returnDate == null) {</span>
+<span class="fc" id="L129">            throw new LibraryException(&quot;Return date is required.&quot;);</span>
+        }
+
+<span class="fc" id="L132">        Item item = findItem(itemId);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (item == null) {</span>
+<span class="fc" id="L134">            throw new LibraryException(&quot;Item was not found: &quot; + itemId);</span>
+        }
+
+<span class="fc" id="L137">        Loan loan = findActiveLoan(itemId);</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (loan == null) {</span>
+<span class="fc" id="L139">            throw new LibraryException(&quot;This item is not currently borrowed.&quot;);</span>
+        }
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (returnDate.isBefore(loan.getBorrowDate())) {</span>
+<span class="fc" id="L142">            throw new LibraryException(&quot;Return date cannot be before the borrow date.&quot;);</span>
+        }
+
+<span class="fc" id="L145">        int fine = fineCalculator.calculateFine(loan.getDueDate(), returnDate);</span>
+<span class="fc" id="L146">        loan.setReturned(true);</span>
+<span class="fc" id="L147">        item.setAvailable(true);</span>
+
+<span class="fc" id="L149">        Member member = findMember(loan.getMemberId());</span>
+<span class="fc" id="L150">        member.decreaseBorrowedCount();</span>
+<span class="fc" id="L151">        return fine;</span>
+    }
+
+    /** FR5: every item that is free to borrow. */
+    public ArrayList&lt;Item&gt; getAvailableItems() {
+<span class="fc" id="L156">        ArrayList&lt;Item&gt; available = new ArrayList&lt;Item&gt;();</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        for (int i = 0; i &lt; items.size(); i++) {</span>
+<span class="fc" id="L158">            Item item = items.get(i);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            if (item.isAvailable()) {</span>
+<span class="fc" id="L160">                available.add(item);</span>
+            }
+        }
+<span class="fc" id="L163">        return available;</span>
+    }
+
+    public Member findMember(String memberId) {
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        for (int i = 0; i &lt; members.size(); i++) {</span>
+<span class="fc" id="L168">            Member member = members.get(i);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">            if (member.getId().equals(memberId)) {</span>
+<span class="fc" id="L170">                return member;</span>
+            }
+        }
+<span class="fc" id="L173">        return null;</span>
+    }
+
+    public Item findItem(String itemId) {
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        for (int i = 0; i &lt; items.size(); i++) {</span>
+<span class="fc" id="L178">            Item item = items.get(i);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">            if (item.getId().equals(itemId)) {</span>
+<span class="fc" id="L180">                return item;</span>
+            }
+        }
+<span class="fc" id="L183">        return null;</span>
+    }
+
+    public Loan findActiveLoan(String itemId) {
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        for (int i = 0; i &lt; loans.size(); i++) {</span>
+<span class="fc" id="L188">            Loan loan = loans.get(i);</span>
+<span class="fc bfc" id="L189" title="All 4 branches covered.">            if (loan.getItemId().equals(itemId) &amp;&amp; !loan.isReturned()) {</span>
+<span class="fc" id="L190">                return loan;</span>
+            }
+        }
+<span class="fc" id="L193">        return null;</span>
+    }
+
+    public int getMemberCount() {
+<span class="fc" id="L197">        return members.size();</span>
+    }
+
+    public int getItemCount() {
+<span class="fc" id="L201">        return items.size();</span>
+    }
+
+    public int getLoanCount() {
+<span class="fc" id="L205">        return loans.size();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

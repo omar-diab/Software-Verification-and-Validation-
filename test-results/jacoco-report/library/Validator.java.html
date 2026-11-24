@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Validator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library of Things</a> &gt; <a href="index.source.html" class="el_package">library</a> &gt; <span class="el_source">Validator.java</span></div><h1>Validator.java</h1><pre class="source lang-java linenums">package library;
+
+/**
+ * Checks the format of member IDs, item IDs, and loan lengths.
+ * A valid member ID looks like M0001. A valid item ID looks like I0001.
+ */
+<span class="nc" id="L7">public class Validator {</span>
+
+    public static final int MIN_LOAN_DAYS = 1;
+    public static final int MAX_LOAN_DAYS = 14;
+
+    public static boolean isMemberId(String id) {
+<span class="fc" id="L13">        return hasPrefixAndFourDigits(id, 'M');</span>
+    }
+
+    public static boolean isItemId(String id) {
+<span class="fc" id="L17">        return hasPrefixAndFourDigits(id, 'I');</span>
+    }
+
+    public static boolean isValidLoanDays(int days) {
+<span class="fc bfc" id="L21" title="All 4 branches covered.">        return days &gt;= MIN_LOAN_DAYS &amp;&amp; days &lt;= MAX_LOAN_DAYS;</span>
+    }
+
+    /**
+     * True when the text is a letter followed by exactly four digits.
+     * Example: M0001 is valid. M001, M00001, and m0001 are not.
+     */
+    private static boolean hasPrefixAndFourDigits(String id, char prefix) {
+<span class="fc bfc" id="L29" title="All 4 branches covered.">        if (id == null || id.length() != 5) {</span>
+<span class="fc" id="L30">            return false;</span>
+        }
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (id.charAt(0) != prefix) {</span>
+<span class="fc" id="L33">            return false;</span>
+        }
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 1; i &lt; id.length(); i++) {</span>
+<span class="fc" id="L36">            char c = id.charAt(i);</span>
+            // Only the normal digits 0 to 9 are allowed.
+            // (Character.isDigit() was not used because it also accepts
+            // other digits such as Arabic-Indic digits. See defect D1.)
+<span class="fc bfc" id="L40" title="All 4 branches covered.">            if (c &lt; '0' || c &gt; '9') {</span>
+<span class="fc" id="L41">                return false;</span>
+            }
+        }
+<span class="fc" id="L44">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,108 @@
+Library of Things
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Member ID (M0001): Name: Registered Sara (M0001).
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Member ID (M0001): Name: Registered Ali (M0002).
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Member ID (M0001): Name: Error: Member ID must look like M0001.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Item ID (I0001): Item name: Category: Owner ID: Added Drill (I0001).
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Item ID (I0001): Item name: Category: Owner ID: Added Tent (I0002).
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: ID | Name | Category | Owner | Availability
+I0001 | Drill | Tools | Sara (M0001) | Available
+I0002 | Tent | Camping | Sara (M0001) | Available
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Member ID: Item ID: Borrow date (yyyy-MM-dd): Loan length in days (1-14): Borrowed. Due date: 2026-11-08.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Member ID: Item ID: Borrow date (yyyy-MM-dd): Loan length in days (1-14): Error: A member cannot borrow their own item.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: ID | Name | Category | Owner | Availability
+I0002 | Tent | Camping | Sara (M0001) | Available
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Item ID: Return date (yyyy-MM-dd): Returned. Late fee: 10 TL.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Item ID: Return date (yyyy-MM-dd): Error: This item is not currently borrowed.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Please enter a number from 1 to 6.
+
+1. Register member
+2. Add item
+3. Borrow item
+4. Return item
+5. Display available items
+6. Exit
+Choose an option: Goodbye.

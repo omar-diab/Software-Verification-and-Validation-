@@ -1,0 +1,38 @@
+Actual Maven output lines from the failing runs, copied before each fix (24 Nov 2026).
+Command used each time: mvn clean test
+
+=== Run A: baseline before any change ===
+[INFO] Tests run: 65, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+=== Run B: D1 regression test added, Validator not fixed yet ===
+[ERROR] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.021 s <<< FAILURE! -- in library.RegressionTest
+[ERROR] library.RegressionTest.idsWithArabicIndicDigitsAreRejected -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <false> but was: <true>
+[ERROR]   RegressionTest.idsWithArabicIndicDigitsAreRejected:60 expected: <false> but was: <true>
+[ERROR] Tests run: 66, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+
+=== Run C: Validator fixed (only '0'..'9' accepted) ===
+[INFO] Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+=== Run D: MainTest added (console tests), D2 not fixed yet ===
+[ERROR] Tests run: 4, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.054 s <<< FAILURE! -- in library.MainTest
+java.util.NoSuchElementException: No line found
+[ERROR]   MainTest.endOfInputStopsTheMenuWithoutCrashing:95->runMenu:32 » NoSuchElement No line found
+[ERROR] Tests run: 70, Failures: 0, Errors: 1, Skipped: 0
+[INFO] BUILD FAILURE
+
+=== Run E: Main fixed (hasNextLine() checked before reading) ===
+[INFO] Tests run: 70, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+=== Run F: extra negative, boundary and decision-table tests added ===
+[INFO] Tests run: 76, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+=== Run G: final run (mvn clean verify) - full log in mvn-clean-verify-output.txt ===
+[INFO] Tests run: 78, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+JaCoCo total: instructions 915/936 (97%), branches 112/112 (100%)

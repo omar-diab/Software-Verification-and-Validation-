@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Loan.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library of Things</a> &gt; <a href="index.source.html" class="el_package">library</a> &gt; <span class="el_source">Loan.java</span></div><h1>Loan.java</h1><pre class="source lang-java linenums">package library;
+
+import java.time.LocalDate;
+
+/**
+ * One borrow of one item.
+ * dueDate is the borrow date plus the number of loan days.
+ * returned stays false until the item is given back.
+ */
+public class Loan {
+
+    private String itemId;
+    private String memberId;
+    private LocalDate borrowDate;
+    private LocalDate dueDate;
+    private boolean returned;
+
+<span class="fc" id="L18">    public Loan(String itemId, String memberId, LocalDate borrowDate, int days) {</span>
+<span class="fc" id="L19">        this.itemId = itemId;</span>
+<span class="fc" id="L20">        this.memberId = memberId;</span>
+<span class="fc" id="L21">        this.borrowDate = borrowDate;</span>
+<span class="fc" id="L22">        this.dueDate = borrowDate.plusDays(days);</span>
+<span class="fc" id="L23">        this.returned = false;</span>
+<span class="fc" id="L24">    }</span>
+
+    public String getItemId() {
+<span class="fc" id="L27">        return itemId;</span>
+    }
+
+    public String getMemberId() {
+<span class="fc" id="L31">        return memberId;</span>
+    }
+
+    public LocalDate getBorrowDate() {
+<span class="fc" id="L35">        return borrowDate;</span>
+    }
+
+    public LocalDate getDueDate() {
+<span class="fc" id="L39">        return dueDate;</span>
+    }
+
+    public boolean isReturned() {
+<span class="fc" id="L43">        return returned;</span>
+    }
+
+    public void setReturned(boolean returned) {
+<span class="fc" id="L47">        this.returned = returned;</span>
+<span class="fc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
